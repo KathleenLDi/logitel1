@@ -293,6 +293,27 @@ function ConsultarPage({ movimentacoes }) {
     </div>
   );
 }
+function Login({ onLogin, erro }) {
+  return (
+    <div className="container d-flex align-items-center justify-content-center min-vh-100">
+      <div className="card p-4 shadow" style={{ maxWidth: 400, width: "100%" }}>
+        <h1 className="h4 text-center mb-4">SISTEMA DE REGISTRO DE EQUIPAMENTOS</h1>
+        <form onSubmit={onLogin}>
+          <div className="mb-3">
+            <label className="form-label">Usuário</label>
+            <input type="text" name="usuario" className="form-control" required />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Senha</label>
+            <input type="password" name="senha" className="form-control" required />
+          </div>
+          {erro && <div className="alert alert-danger">{erro}</div>}
+          <button type="submit" className="btn btn-primary w-100">Entrar</button>
+        </form>
+      </div>
+    </div>
+  );
+}
 
 // --- REGISTRO DE MOVIMENTACAO ---
 function RegistroMovimentacao({ tipo, onSalvar, onCancelar }) {
@@ -310,23 +331,10 @@ function RegistroMovimentacao({ tipo, onSalvar, onCancelar }) {
   const [outroEvento, setOutroEvento] = useState("");
   const [erro, setErro] = useState("");
 
-  const motivosEntrada = [
-    "Compra",
-    "Empréstimo para outro setor",
-    "Outros"
-  ];
-  const motivosSaida = [
-    "Manutenção",
-    "Empréstimo para outro setor",
-    "Outros"
-  ];
-  const eventosPadrao = [
-    "Na praia",
-    "Moto week",
-    "Outros"
-  ];
+  const motivosEntrada = ["Compra", "Empréstimo para outro setor", "Outros"];
+  const motivosSaida = ["Manutenção", "Empréstimo para outro setor", "Outros"];
+  const eventosPadrao = ["Na praia", "Moto week", "Outros"];
 
-  // Manipula arquivo da nota fiscal (imagem ou pdf)
   function handleNotaFiscalFile(e) {
     const file = e.target.files[0];
     setNotaFiscalFile(file);
@@ -345,16 +353,21 @@ function RegistroMovimentacao({ tipo, onSalvar, onCancelar }) {
     e.preventDefault();
     if (!equipamento || !localizacao || !responsavel ||
       ((tipo === "Entrada" || tipo === "Saída") && !motivo) ||
-      (tipo === "Evento" && !evento)
-    ) {
+      (tipo === "Evento" && !evento)) {
       setErro("Preencha todos os campos obrigatórios!");
       return;
     }
+
+    if (!observacao.trim()) {
+      setErro("O campo de observação é obrigatório!");
+      return;
+    }
+
     let motivoFinal = motivo === "Outros" ? outroMotivo : motivo;
     let eventoFinal = evento === "Outros" ? outroEvento : evento;
 
     onSalvar({
-      tipo: tipo,
+      tipo,
       equipamento,
       localizacao,
       responsavel,
@@ -383,20 +396,14 @@ function RegistroMovimentacao({ tipo, onSalvar, onCancelar }) {
           <label className="form-label">Responsável *</label>
           <input className="form-control" value={responsavel} onChange={e => setResponsavel(e.target.value)} required />
         </div>
+
         {(tipo === "Entrada") && (
           <>
             <div className="mb-3">
               <label className="form-label">Motivo *</label>
-              <select
-                className="form-select"
-                value={motivo}
-                onChange={e => setMotivo(e.target.value)}
-                required
-              >
+              <select className="form-select" value={motivo} onChange={e => setMotivo(e.target.value)} required>
                 <option value="">Selecione</option>
-                {motivosEntrada.map(op => (
-                  <option key={op} value={op}>{op}</option>
-                ))}
+                {motivosEntrada.map(op => <option key={op} value={op}>{op}</option>)}
               </select>
               {motivo === "Outros" && (
                 <input
@@ -422,30 +429,24 @@ function RegistroMovimentacao({ tipo, onSalvar, onCancelar }) {
                 accept="image/*,application/pdf"
                 onChange={handleNotaFiscalFile}
               />
-              {notaFiscalUrl &&
+              {notaFiscalUrl && (
                 <div className="mt-2">
                   <span className="me-2">Arquivo:</span>
                   <a href={notaFiscalUrl} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-link">
                     Visualizar Nota
                   </a>
                 </div>
-              }
+              )}
             </div>
           </>
         )}
+
         {(tipo === "Saída") && (
           <div className="mb-3">
             <label className="form-label">Motivo *</label>
-            <select
-              className="form-select"
-              value={motivo}
-              onChange={e => setMotivo(e.target.value)}
-              required
-            >
+            <select className="form-select" value={motivo} onChange={e => setMotivo(e.target.value)} required>
               <option value="">Selecione</option>
-              {motivosSaida.map(op => (
-                <option key={op} value={op}>{op}</option>
-              ))}
+              {motivosSaida.map(op => <option key={op} value={op}>{op}</option>)}
             </select>
             {motivo === "Outros" && (
               <input
@@ -458,19 +459,13 @@ function RegistroMovimentacao({ tipo, onSalvar, onCancelar }) {
             )}
           </div>
         )}
+
         {tipo === "Evento" && (
           <div className="mb-3">
             <label className="form-label">Tipo de Evento *</label>
-            <select
-              className="form-select"
-              value={evento}
-              onChange={e => setEvento(e.target.value)}
-              required
-            >
+            <select className="form-select" value={evento} onChange={e => setEvento(e.target.value)} required>
               <option value="">Selecione</option>
-              {["Na praia", "Moto week", "Outros"].map(op => (
-                <option key={op} value={op}>{op}</option>
-              ))}
+              {eventosPadrao.map(op => <option key={op} value={op}>{op}</option>)}
             </select>
             {evento === "Outros" && (
               <input
@@ -483,6 +478,7 @@ function RegistroMovimentacao({ tipo, onSalvar, onCancelar }) {
             )}
           </div>
         )}
+
         <div className="mb-3">
           <label className="form-label">Data e Hora</label>
           <input
@@ -493,46 +489,32 @@ function RegistroMovimentacao({ tipo, onSalvar, onCancelar }) {
           />
           <small className="form-text text-muted">Se não preencher, será usada a data/hora atual.</small>
         </div>
+
+        {/* OBSERVAÇÃO COM VALIDAÇÃO */}
         <div className="mb-3">
-          <label className="form-label">Observação</label>
-          <textarea className="form-control" value={observacao} onChange={e => setObservacao(e.target.value)} rows={3} />
+          <label className="form-label">Observação *</label>
+          <textarea
+            className={`form-control ${erro.includes("observação") ? "is-invalid" : ""}`}
+            value={observacao}
+            onChange={e => setObservacao(e.target.value)}
+            rows={3}
+          />
+          {erro.includes("observação") && (
+            <div className="invalid-feedback">Campo obrigatório</div>
+          )}
         </div>
-        {erro && <div className="alert alert-danger">{erro}</div>}
+
+        {erro && !erro.includes("observação") && (
+          <div className="alert alert-danger">{erro}</div>
+        )}
+
         <button className="btn btn-primary me-2" type="submit">Registrar</button>
         <button className="btn btn-secondary" onClick={onCancelar} type="button">Cancelar</button>
       </form>
     </div>
   );
+  
 }
-
-function Login({ onLogin, erro }) {
-  return (
-    <div className="container d-flex align-items-center justify-content-center min-vh-100">
-      <div className="card p-4 shadow" style={{ maxWidth: 400, width: "100%" }}>
-        <h1 className="h4 text-center mb-4">SISTEMA DE REGISTRO DE EQUIPAMENTOS</h1>
-        <form onSubmit={onLogin}>
-          <div className="mb-3">
-            <label htmlFor="usuario" className="form-label">
-              Usuário
-            </label>
-            <input type="text" className="form-control" id="usuario" name="usuario" required autoFocus />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="senha" className="form-label">
-              Senha
-            </label>
-            <input type="password" className="form-control" id="senha" name="senha" required />
-          </div>
-          {erro && <div className="alert alert-danger py-1">{erro}</div>}
-          <button type="submit" className="btn btn-primary w-100">
-            Entrar
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-}
-
 export default function App() {
   const [logado, setLogado] = useState(false);
   const [erroLogin, setErroLogin] = useState("");
