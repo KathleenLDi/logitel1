@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect  } from "react";
 
 function RegistroMovimentacao({ tipo, onSalvar, onCancelar }) {
   const [equipamento, setEquipamento] = useState("");
@@ -14,6 +14,13 @@ function RegistroMovimentacao({ tipo, onSalvar, onCancelar }) {
   const [evento, setEvento] = useState("");
   const [outroEvento, setOutroEvento] = useState("");
   const [erro, setErro] = useState("");
+useEffect(() => {
+  const agora = new Date();
+  const localISOTime = new Date(agora.getTime() - agora.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 16); // "YYYY-MM-DDTHH:mm"
+  setDataHora(localISOTime);
+}, []);
 
   const motivosEntrada = ["Compra", "Empréstimo para outro setor", "Outros"];
   const motivosSaida = ["Manutenção", "Empréstimo para outro setor", "Outros"];
@@ -135,7 +142,7 @@ function RegistroMovimentacao({ tipo, onSalvar, onCancelar }) {
 
         <div className="mb-3">
           <label className="form-label">Data e Hora</label>
-          <input className="form-control" type="datetime-local" value={dataHora} onChange={e => setDataHora(e.target.value)} />
+          <input className="form-control" type="datetime-local" value={dataHora} readOnly/>
           <small className="form-text text-muted">Se não preencher, será usada a data/hora atual.</small>
         </div>
 

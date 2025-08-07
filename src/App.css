@@ -36,3 +36,26 @@
     transform: rotate(360deg);
   }
 }
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Centraliza verticalmente */
+  background: #f7f8fa; /* ou o que preferir */
+}
+
+.login-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  text-align: center; /* <-- Isso centraliza a logo e os campos */
+  width: 100%;
+  max-width: 400px;
+}
+
+.logo {
+  max-width: 200px;
+  height: auto;
+  margin-bottom: 1.5rem;
+}
