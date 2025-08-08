@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 // src/App.js
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
+=======
+import React, { useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
+
+// Importando componentes personalizados
+>>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
 import Home from "./components/Home";
 import Sidebar from "./components/Sidebar";
 import RegistroMovimentacao from "./components/RegistroMovimentacao";
@@ -12,7 +20,10 @@ import MovimentacoesPage from "./components/MovimentacoesPage";
 import EventosPage from "./components/EventosPage";
 import ConsultarPage from "./components/ConsultarPage";
 
+<<<<<<< HEAD
 const API = "http://localhost:4000";
+=======
+>>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
 
 export default function App() {
   const [logado, setLogado] = useState(false);
@@ -20,6 +31,7 @@ export default function App() {
   const [pagina, setPagina] = useState("home");
   const [mostrarRegistro, setMostrarRegistro] = useState({ tipo: null, ativo: false });
 
+<<<<<<< HEAD
   const [movimentacoes, setMovimentacoes] = useState([]);
 
   useEffect(() => {
@@ -28,6 +40,81 @@ export default function App() {
       .then(setMovimentacoes)
       .catch(console.error);
   }, []);
+=======
+  const [movimentacoes, setMovimentacoes] = useState([
+    {
+      dataHora: "2024-04-22T08:30:00",
+      tipo: "Entrada",
+      equipamento: "Impressora Canon",
+      localizacao: "Sala 3",
+      responsavel: "João",
+      motivo: "Compra",
+      notaFiscal: "NF12345",
+      notaFiscalUrl: "",
+      observacao: "",
+    },
+    {
+      dataHora: "2024-04-18T14:20:00",
+      tipo: "Saída",
+      equipamento: "Scanner",
+      localizacao: "Sala 1",
+      responsavel: "Maria",
+      motivo: "Empréstimo para outro setor",
+      observacao: "",
+    },
+    {
+      dataHora: "2024-04-20T10:00:00",
+      tipo: "Evento",
+      equipamento: "Roteador Cisco",
+      localizacao: "Sala 4",
+      responsavel: "Felipe",
+      motivo: "Na praia",
+      observacao: "Evento de teste",
+      devolvido: false,
+    },
+    {
+      dataHora: "2024-04-18T12:50:00",
+      tipo: "Entrada",
+      equipamento: "Laptop Dell",
+      localizacao: "Sala 2",
+      responsavel: "Carlos",
+      motivo: "Compra",
+      notaFiscal: "NF99999",
+      notaFiscalUrl: "",
+      observacao: "Novo",
+    },
+    {
+      dataHora: "2024-04-19T08:40:00",
+      tipo: "Evento",
+      equipamento: "Switch HP",
+      localizacao: "Sala 5",
+      responsavel: "Paula",
+      motivo: "Moto week",
+      observacao: "Troca de porta",
+      devolvido: true,
+    },
+    {
+      dataHora: "2024-04-17T16:00:00",
+      tipo: "Entrada",
+      equipamento: "Projetor",
+      localizacao: "Sala 2",
+      responsavel: "João",
+      motivo: "Empréstimo para outro setor",
+      notaFiscal: "NF11223",
+      notaFiscalUrl: "",
+      observacao: "",
+    },
+    {
+      dataHora: "2024-04-18T17:00:00",
+      tipo: "Saída",
+      equipamento: "HD Externo",
+      localizacao: "Sala 1",
+      responsavel: "Lucas",
+      motivo: "Manutenção",
+      observacao: "Troca de setor",
+    },
+  ]);
+>>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
 
   function handleLogin(e) {
     e.preventDefault();
@@ -47,6 +134,7 @@ export default function App() {
     setPagina("home");
   }
 
+<<<<<<< HEAD
   // chamado pelo RegistroMovimentacao após salvar no backend
   function handleRegistrarMovimentacaoLocal(nova) {
     setMovimentacoes((prev) => [nova, ...prev]);
@@ -63,6 +151,17 @@ export default function App() {
       console.error(e);
       alert("Falha ao registrar devolução.");
     }
+=======
+  function handleRegistrarMovimentacao(dados) {
+    setMovimentacoes([{ ...dados }, ...movimentacoes]);
+    setMostrarRegistro({ tipo: null, ativo: false });
+  }
+
+  function handleDevolucao(itemDevolver) {
+    setMovimentacoes(movimentacoes.map(item =>
+      item === itemDevolver ? { ...item, devolvido: true } : item
+    ));
+>>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
   }
 
   let conteudo = null;
@@ -72,9 +171,14 @@ export default function App() {
     conteudo = (
       <RegistroMovimentacao
         tipo={mostrarRegistro.tipo}
+<<<<<<< HEAD
         onSalvarLocal={handleRegistrarMovimentacaoLocal}  // <- nome certo aqui
         onCancelar={() => setMostrarRegistro({ tipo: null, ativo: false })}
         API={API}
+=======
+        onSalvar={handleRegistrarMovimentacao}
+        onCancelar={() => setMostrarRegistro({ tipo: null, ativo: false })}
+>>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
       />
     );
   } else if (pagina === "home") {
@@ -119,9 +223,13 @@ export default function App() {
     conteudo = (
       <div className="flex-grow-1 p-5 text-center">
         <h2 className="fw-bold mb-3">Em construção</h2>
+<<<<<<< HEAD
         <button className="btn btn-outline-primary" onClick={() => setPagina("home")}>
           Voltar ao início
         </button>
+=======
+        <button className="btn btn-outline-primary" onClick={() => setPagina("home")}>Voltar ao início</button>
+>>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
       </div>
     );
   }

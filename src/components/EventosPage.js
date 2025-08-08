@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+// EventosPage.js
+>>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
 import React, { useState } from "react";
 import ListaMovimentacoes from "./ListaMovimentacoes";
 import ModalDevolucao from "./ModalDevolucao";
@@ -7,6 +11,7 @@ export default function EventosPage({ movimentacoes, onRegistrar, onDevolver, on
   const [modalAberto, setModalAberto] = useState(false);
   const [eventoSelecionado, setEventoSelecionado] = useState(null);
 
+<<<<<<< HEAD
   const filtradas = movimentacoes
     .filter((m) => m.tipo === "Evento")
     .filter((item) => item.equipamento.toLowerCase().includes(busca.toLowerCase()));
@@ -28,10 +33,41 @@ export default function EventosPage({ movimentacoes, onRegistrar, onDevolver, on
     }
     fecharModal();
   }
+=======
+  // Filtrando apenas os eventos
+  const filtradas = movimentacoes
+    .filter(m => m.tipo === "Evento")
+    .filter(item =>
+      item.equipamento.toLowerCase().includes(busca.toLowerCase())
+    );
+
+  const abrirModalDevolucao = (evento) => {
+    setEventoSelecionado(evento);
+    setModalAberto(true);
+  };
+
+  const fecharModalDevolucao = () => {
+    setEventoSelecionado(null);
+    setModalAberto(false);
+  };
+
+  const salvarDevolucao = (dadosDevolucao) => {
+    onDevolver({
+      ...eventoSelecionado,
+      devolvido: true,
+      ...dadosDevolucao
+    });
+    fecharModalDevolucao();
+  };
+>>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
 
   return (
     <div className="flex-grow-1 p-5" style={{ background: "#f5f6fa" }}>
       <h2 className="mb-4 fw-bold">Eventos</h2>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
       <button className="btn btn-warning text-dark mb-3" onClick={onRegistrar}>
         <i className="bi bi-plus-circle me-2"></i>Registrar Evento
       </button>
@@ -43,14 +79,25 @@ export default function EventosPage({ movimentacoes, onRegistrar, onDevolver, on
             className="form-control"
             placeholder="Buscar equipamento em evento"
             value={busca}
+<<<<<<< HEAD
             onChange={(e) => setBusca(e.target.value)}
+=======
+            onChange={e => setBusca(e.target.value)}
+>>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
           />
           <span className="input-group-text"><i className="bi bi-search"></i></span>
         </div>
       </div>
 
+<<<<<<< HEAD
       {/* Aqui passamos nossa função que abre o modal */}
       <ListaMovimentacoes movimentacoes={filtradas} onDevolver={abrirModalDevolucao} />
+=======
+      <ListaMovimentacoes
+        movimentacoes={filtradas}
+        onDevolver={abrirModalDevolucao} // Passa o evento para o modal
+      />
+>>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
 
       <button className="btn btn-outline-secondary mt-3" onClick={onVoltar}>
         <i className="bi bi-arrow-left"></i> Voltar
@@ -58,10 +105,16 @@ export default function EventosPage({ movimentacoes, onRegistrar, onDevolver, on
 
       {/* Modal de devolução */}
       <ModalDevolucao
+<<<<<<< HEAD
         aberto={modalAberto}
         evento={eventoSelecionado}
         onFechar={fecharModal}
         onSalvo={devolucaoSalva}
+=======
+        isOpen={modalAberto}
+        onClose={fecharModalDevolucao}
+        onSalvar={salvarDevolucao}
+>>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
       />
     </div>
   );

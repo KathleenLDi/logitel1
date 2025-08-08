@@ -5,6 +5,7 @@ function ListaMovimentacoes({ movimentacoes, onDevolver }) {
     (m) => m.tipo === "Entrada" && (m.notaFiscal || m.notaFiscalUrl)
   );
 
+<<<<<<< HEAD
   // Abre nota:
   // - se vier em base64 (data:...), abre num iframe em nova janela (evita tela preta)
   // - se vier como /uploads/arquivo.ext, abre normal
@@ -30,6 +31,8 @@ function ListaMovimentacoes({ movimentacoes, onDevolver }) {
     }
   }
 
+=======
+>>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
   return (
     <div className="bg-white rounded shadow-sm p-3">
       <div className="table-responsive">
@@ -70,7 +73,10 @@ function ListaMovimentacoes({ movimentacoes, onDevolver }) {
                   <td>{item.localizacao}</td>
                   <td>{item.responsavel}</td>
                   <td>{item.motivo || "-"}</td>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
                   {isEntrada && (
                     <td>
                       {item.tipo === "Entrada" ? (
@@ -78,6 +84,7 @@ function ListaMovimentacoes({ movimentacoes, onDevolver }) {
                           {item.notaFiscal || "-"}
                           {item.notaFiscalUrl && (
                             <div>
+<<<<<<< HEAD
                               <button
                                 type="button"
                                 className="btn btn-sm btn-link mt-1"
@@ -85,6 +92,16 @@ function ListaMovimentacoes({ movimentacoes, onDevolver }) {
                               >
                                 <i className="bi bi-eye"></i> Visualizar
                               </button>
+=======
+                              <a
+                                href={item.notaFiscalUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn btn-sm btn-link mt-1"
+                              >
+                                <i className="bi bi-eye"></i> Visualizar
+                              </a>
+>>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
                             </div>
                           )}
                         </>
@@ -93,9 +110,13 @@ function ListaMovimentacoes({ movimentacoes, onDevolver }) {
                       )}
                     </td>
                   )}
+<<<<<<< HEAD
 
                   <td>{item.observacao || "-"}</td>
 
+=======
+                  <td>{item.observacao || "-"}</td>
+>>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
                   {onDevolver && (
                     <td>
                       {item.devolvido ? (
