@@ -1,76 +1,45 @@
-<<<<<<< HEAD
-=======
-// EventosPage.js
->>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
-import React, { useState } from "react";
+// src/components/EventosPage.js
+import React, { useMemo, useState } from "react";
 import ListaMovimentacoes from "./ListaMovimentacoes";
-import ModalDevolucao from "./ModalDevolucao";
 
-export default function EventosPage({ movimentacoes, onRegistrar, onDevolver, onVoltar }) {
+export default function EventosPage({
+  movimentacoes = [],            // <-- valor padrão evita undefined
+  onRegistrar,
+  onDevolver,
+  onConsultarDevolucoes,         // opcional
+  onVoltar,
+}) {
   const [busca, setBusca] = useState("");
-  const [modalAberto, setModalAberto] = useState(false);
-  const [eventoSelecionado, setEventoSelecionado] = useState(null);
 
-<<<<<<< HEAD
-  const filtradas = movimentacoes
-    .filter((m) => m.tipo === "Evento")
-    .filter((item) => item.equipamento.toLowerCase().includes(busca.toLowerCase()));
+  const eventos = useMemo(
+    () => (Array.isArray(movimentacoes) ? movimentacoes : []).filter(m => m?.tipo === "Evento"),
+    [movimentacoes]
+  );
 
-  function abrirModalDevolucao(evento) {
-    setEventoSelecionado(evento);
-    setModalAberto(true);
-  }
-
-  function fecharModal() {
-    setEventoSelecionado(null);
-    setModalAberto(false);
-  }
-
-  // Quando salvar no modal, marca como devolvido na lista do App
-  function devolucaoSalva() {
-    if (onDevolver && eventoSelecionado) {
-      onDevolver(eventoSelecionado); // reaproveita handler do App
-    }
-    fecharModal();
-  }
-=======
-  // Filtrando apenas os eventos
-  const filtradas = movimentacoes
-    .filter(m => m.tipo === "Evento")
-    .filter(item =>
-      item.equipamento.toLowerCase().includes(busca.toLowerCase())
-    );
-
-  const abrirModalDevolucao = (evento) => {
-    setEventoSelecionado(evento);
-    setModalAberto(true);
-  };
-
-  const fecharModalDevolucao = () => {
-    setEventoSelecionado(null);
-    setModalAberto(false);
-  };
-
-  const salvarDevolucao = (dadosDevolucao) => {
-    onDevolver({
-      ...eventoSelecionado,
-      devolvido: true,
-      ...dadosDevolucao
-    });
-    fecharModalDevolucao();
-  };
->>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
+  const filtradas = useMemo(() => {
+    const termo = busca.toLowerCase();
+    return eventos.filter(it => (it?.equipamento || "").toLowerCase().includes(termo));
+  }, [eventos, busca]);
 
   return (
     <div className="flex-grow-1 p-5" style={{ background: "#f5f6fa" }}>
       <h2 className="mb-4 fw-bold">Eventos</h2>
-<<<<<<< HEAD
-=======
 
->>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
-      <button className="btn btn-warning text-dark mb-3" onClick={onRegistrar}>
-        <i className="bi bi-plus-circle me-2"></i>Registrar Evento
-      </button>
+      <div className="d-flex flex-wrap gap-2 mb-3">
+        <button className="btn btn-warning text-dark" onClick={onRegistrar}>
+          <i className="bi bi-plus-circle me-2"></i>Registrar Evento
+        </button>
+
+        {onConsultarDevolucoes && (
+          <button className="btn btn-outline-secondary" onClick={onConsultarDevolucoes}>
+            <i className="bi bi-eye me-2"></i>Consultar Devoluções
+          </button>
+        )}
+
+        <button className="btn btn-outline-secondary ms-auto" onClick={onVoltar}>
+          <i className="bi bi-arrow-left"></i> Voltar
+        </button>
+      </div>
 
       <div className="mb-4" style={{ maxWidth: 400 }}>
         <div className="input-group">
@@ -79,43 +48,13 @@ export default function EventosPage({ movimentacoes, onRegistrar, onDevolver, on
             className="form-control"
             placeholder="Buscar equipamento em evento"
             value={busca}
-<<<<<<< HEAD
             onChange={(e) => setBusca(e.target.value)}
-=======
-            onChange={e => setBusca(e.target.value)}
->>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
           />
           <span className="input-group-text"><i className="bi bi-search"></i></span>
         </div>
       </div>
 
-<<<<<<< HEAD
-      {/* Aqui passamos nossa função que abre o modal */}
-      <ListaMovimentacoes movimentacoes={filtradas} onDevolver={abrirModalDevolucao} />
-=======
-      <ListaMovimentacoes
-        movimentacoes={filtradas}
-        onDevolver={abrirModalDevolucao} // Passa o evento para o modal
-      />
->>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
-
-      <button className="btn btn-outline-secondary mt-3" onClick={onVoltar}>
-        <i className="bi bi-arrow-left"></i> Voltar
-      </button>
-
-      {/* Modal de devolução */}
-      <ModalDevolucao
-<<<<<<< HEAD
-        aberto={modalAberto}
-        evento={eventoSelecionado}
-        onFechar={fecharModal}
-        onSalvo={devolucaoSalva}
-=======
-        isOpen={modalAberto}
-        onClose={fecharModalDevolucao}
-        onSalvar={salvarDevolucao}
->>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
-      />
+      <ListaMovimentacoes movimentacoes={filtradas} onDevolver={onDevolver} />
     </div>
   );
 }

@@ -1,20 +1,20 @@
+// src/components/ListaMovimentacoes.js
 import React from "react";
+
+const API_BASE = process.env.REACT_APP_API || "http://localhost:4000";
 
 function ListaMovimentacoes({ movimentacoes, onDevolver }) {
   const isEntrada = movimentacoes.some(
     (m) => m.tipo === "Entrada" && (m.notaFiscal || m.notaFiscalUrl)
   );
 
-<<<<<<< HEAD
-  // Abre nota:
-  // - se vier em base64 (data:...), abre num iframe em nova janela (evita tela preta)
-  // - se vier como /uploads/arquivo.ext, abre normal
   function abrirNota(item) {
     const url = item.notaFiscalUrl;
     if (!url) return;
 
+    // Base64: abre num iframe numa nova aba p/ evitar tela preta
     if (url.startsWith("data:")) {
-      const w = window.open("", "_blank", "noopener");
+      const w = window.open("", "_blank", "noopener,noreferrer");
       if (w) {
         w.document.write(`
           <html>
@@ -26,13 +26,17 @@ function ListaMovimentacoes({ movimentacoes, onDevolver }) {
         `);
         w.document.close();
       }
-    } else {
-      window.open(url, "_blank", "noopener");
+      return;
     }
+
+    // Caminho relativo do backend -> prefixa com host da API
+    const finalUrl = url.startsWith("/uploads/")
+      ? `${API_BASE}${url}`
+      : url;
+
+    window.open(finalUrl, "_blank", "noopener,noreferrer");
   }
 
-=======
->>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
   return (
     <div className="bg-white rounded shadow-sm p-3">
       <div className="table-responsive">
@@ -63,20 +67,13 @@ function ListaMovimentacoes({ movimentacoes, onDevolver }) {
             ) : (
               movimentacoes.map((item, i) => (
                 <tr key={i}>
-                  <td>
-                    {item.dataHora
-                      ? new Date(item.dataHora).toLocaleString()
-                      : "--"}
-                  </td>
+                  <td>{item.dataHora ? new Date(item.dataHora).toLocaleString() : "--"}</td>
                   <td>{item.tipo}</td>
                   <td>{item.equipamento}</td>
                   <td>{item.localizacao}</td>
                   <td>{item.responsavel}</td>
                   <td>{item.motivo || "-"}</td>
-<<<<<<< HEAD
 
-=======
->>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
                   {isEntrada && (
                     <td>
                       {item.tipo === "Entrada" ? (
@@ -84,24 +81,13 @@ function ListaMovimentacoes({ movimentacoes, onDevolver }) {
                           {item.notaFiscal || "-"}
                           {item.notaFiscalUrl && (
                             <div>
-<<<<<<< HEAD
                               <button
                                 type="button"
-                                className="btn btn-sm btn-link mt-1"
+                                className="btn btn-sm btn-link mt-1 p-0"
                                 onClick={() => abrirNota(item)}
                               >
                                 <i className="bi bi-eye"></i> Visualizar
                               </button>
-=======
-                              <a
-                                href={item.notaFiscalUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn btn-sm btn-link mt-1"
-                              >
-                                <i className="bi bi-eye"></i> Visualizar
-                              </a>
->>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
                             </div>
                           )}
                         </>
@@ -110,13 +96,9 @@ function ListaMovimentacoes({ movimentacoes, onDevolver }) {
                       )}
                     </td>
                   )}
-<<<<<<< HEAD
 
                   <td>{item.observacao || "-"}</td>
 
-=======
-                  <td>{item.observacao || "-"}</td>
->>>>>>> 765ced9a04f7e38824485172b30cd6feb4f91c36
                   {onDevolver && (
                     <td>
                       {item.devolvido ? (
