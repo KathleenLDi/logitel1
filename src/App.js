@@ -11,8 +11,9 @@ import Login from "./components/Login";
 import MovimentacoesPage from "./components/MovimentacoesPage";
 import EventosPage from "./components/EventosPage";
 import ConsultarPage from "./components/ConsultarPage";
+import DevolucoesPage from "./components/DevolucoesPage";
 
-const API = "http://localhost:4000"; // troque pelo IP do servidor quando for subir
+const API = "http://localhost:4000";
 
 export default function App() {
   const [logado, setLogado] = useState(false);
@@ -20,13 +21,14 @@ export default function App() {
   const [pagina, setPagina] = useState("home");
   const [mostrarRegistro, setMostrarRegistro] = useState({ tipo: null, ativo: false });
 
-  // dados
   const [movimentacoes, setMovimentacoes] = useState([]);
 
   // modal devolução
   const [devModal, setDevModal] = useState({ aberto: false, item: null });
 
-  // carrega movimentações ao iniciar
+  // consulta de devoluções (evento selecionado)
+  const [eventoSelecionado, setEventoSelecionado] = useState(null);
+
   useEffect(() => {
     fetch(`${API}/movimentacoes`)
       .then((r) => r.json())
@@ -52,22 +54,21 @@ export default function App() {
     setPagina("home");
   }
 
-  // chamada pelo RegistroMovimentacao após salvar na API
+  // chamada depois de salvar pela API
   function handleRegistrarMovimentacaoLocal(nova) {
     setMovimentacoes((prev) => [nova, ...prev]);
     setMostrarRegistro({ tipo: null, ativo: false });
     setPagina("home");
   }
 
-  // ABRE modal de devolução (não marca direto)
+  // abre modal de devolução
   function abrirModalDevolucao(item) {
     setDevModal({ aberto: true, item });
   }
 
-  // Salva devolução via /devolucoes e marca devolvido no item
+  // salva devolução via API
   async function salvarDevolucao(dados) {
     if (!devModal.item) return;
-
     try {
       const fd = new FormData();
       fd.append("movimentacaoId", devModal.item.id);
@@ -76,16 +77,13 @@ export default function App() {
       fd.append("dataHora", new Date().toISOString());
       if (dados.imagem) fd.append("imagem", dados.imagem);
 
-      const r = await fetch(`${API}/devolucoes`, {
-        method: "POST",
-        body: fd,
-      });
+      const r = await fetch(`${API}/devolucoes`, { method: "POST", body: fd });
       if (!r.ok) {
         alert("Falha ao registrar devolução.");
         return;
       }
 
-      // marca devolvido na lista
+      // marca como devolvido no estado
       setMovimentacoes((prev) =>
         prev.map((m) => (m.id === devModal.item.id ? { ...m, devolvido: 1 } : m))
       );
@@ -97,6 +95,16 @@ export default function App() {
     }
   }
 
+
+function abrirConsultaDevolucoes(item) {
+  if (!item || !item.id) {
+    alert("Selecione um evento para consultar as devoluções.");
+    return;
+  }
+  setEventoSelecionado(item);
+  setPagina("devolucoes");
+}
+
   let conteudo = null;
 
   if (!logado) {
@@ -105,7 +113,7 @@ export default function App() {
     conteudo = (
       <RegistroMovimentacao
         tipo={mostrarRegistro.tipo}
-        onSalvar={handleRegistrarMovimentacaoLocal} // <- nome alinhado
+        onSalvar={handleRegistrarMovimentacaoLocal}
         onCancelar={() => setMostrarRegistro({ tipo: null, ativo: false })}
         API={API}
       />
@@ -142,11 +150,23 @@ export default function App() {
       <EventosPage
         movimentacoes={movimentacoes}
         onRegistrar={() => setMostrarRegistro({ tipo: "Evento", ativo: true })}
-        onDevolver={abrirModalDevolucao}  // <- abre modal
+        onDevolver={abrirModalDevolucao}
+        onConsultarDevolucoes={abrirConsultaDevolucoes}
         onVoltar={() => setPagina("home")}
-        
       />
     );
+  } else if (pagina === "devolucoes") {
+  conteudo = (
+    <DevolucoesPage
+      API={API}
+      item={eventoSelecionado}
+      onVoltar={() => {
+        setEventoSelecionado(null);
+        setPagina("eventos");
+      }}
+    />
+  );
+
   } else if (pagina === "consultar") {
     conteudo = <ConsultarPage movimentacoes={movimentacoes} />;
   } else {
@@ -198,7 +218,7 @@ export default function App() {
   );
 }
 
-/* --- componente de formulário do modal (inline no mesmo arquivo) --- */
+/* Form do modal (no mesmo arquivo) */
 function DevolucaoForm({ onCancel, onSave }) {
   const [responsavel, setResponsavel] = useState("");
   const [observacao, setObservacao] = useState("");

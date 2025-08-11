@@ -12,7 +12,7 @@ function ListaMovimentacoes({ movimentacoes, onDevolver }) {
     const url = item.notaFiscalUrl;
     if (!url) return;
 
-    // Base64: abre num iframe numa nova aba p/ evitar tela preta
+    // Base64: abre num iframe numa nova aba PARa evitar tela preta
     if (url.startsWith("data:")) {
       const w = window.open("", "_blank", "noopener,noreferrer");
       if (w) {

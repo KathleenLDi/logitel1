@@ -1,140 +1,109 @@
 // src/components/DevolucoesPage.js
 import React, { useEffect, useState } from "react";
 
-const abrirArquivo = (url) => {
-  if (!url) return;
-  if (url.startsWith("data:")) {
-    const w = window.open("", "_blank", "noopener");
-    if (w) {
-      w.document.write(`
-        <html>
-          <head><title>Nota / Imagem</title></head>
-          <body style="margin:0">
-            <iframe src="${url}" style="border:0;width:100vw;height:100vh"></iframe>
-          </body>
-        </html>
-      `);
-      w.document.close();
-    }
-  } else {
-    window.open(url, "_blank", "noopener");
-  }
-};
 
-export default function DevolucoesPage({ API, onVoltar }) {
-  const [busca, setBusca] = useState("");
-  const [items, setItems] = useState([]);
-  const [carregando, setCarregando] = useState(true);
+const API_DEFAULT = "http://localhost:4000";
+
+export default function DevolucoesPage({ API = "http://localhost:4000", item, onVoltar }) {
+  const [loading, setLoading] = useState(true);
+  const [lista, setLista] = useState([]);
+  const [erro, setErro] = useState("");
 
   useEffect(() => {
-    let ativo = true;
-    setCarregando(true);
-    fetch(`${API}/devolucoes`)
-      .then((r) => r.json())
-      .then((data) => {
-        if (ativo) setItems(data);
-      })
-      .catch(console.error)
-      .finally(() => ativo && setCarregando(false));
-    return () => {
-      ativo = false;
-    };
-  }, [API]);
+    let abort = false;
 
-  const filtrados = items.filter((d) => {
-    const alvo = [
-      d.responsavel,
-      d.equipamento,
-      d.observacao,
-      d.localizacao,
-      d.tipoMov,
-    ]
-      .filter(Boolean)
-      .join(" ")
-      .toLowerCase();
-    return alvo.includes(busca.toLowerCase());
-  });
+    async function carregar() {
+      if (!item || !item.id) {
+        setLoading(false);
+        setLista([]);
+        return;
+      }
+      setLoading(true);
+      setErro("");
+
+      try {
+        const r = await fetch(`${API}/movimentacoes/${item.id}/devolucoes`);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const dados = await r.json();
+        if (!abort) setLista(Array.isArray(dados) ? dados : []);
+      } catch (e) {
+        if (!abort) setErro("Falha ao carregar devoluções.");
+      } finally {
+        if (!abort) setLoading(false);
+      }
+    }
+
+    carregar();
+    return () => {
+      abort = true;
+    };
+  }, [API, item]);
 
   return (
     <div className="flex-grow-1 p-5" style={{ background: "#f5f6fa" }}>
-      <div className="d-flex align-items-center justify-content-between mb-3">
-        <h2 className="fw-bold mb-0">Devoluções</h2>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h2 className="fw-bold">
+          Devoluções{item?.equipamento ? ` • ${item.equipamento}` : ""}
+        </h2>
         <button className="btn btn-outline-secondary" onClick={onVoltar}>
-          <i className="bi bi-arrow-left"></i> Voltar
+          <i className="bi bi-arrow-left me-2" />
+          Voltar
         </button>
       </div>
 
-      <div className="mb-3" style={{ maxWidth: 420 }}>
-        <div className="input-group">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Buscar por equipamento, responsável ou observação"
-            value={busca}
-            onChange={(e) => setBusca(e.target.value)}
-          />
-          <span className="input-group-text">
-            <i className="bi bi-search"></i>
-          </span>
-        </div>
-      </div>
+      {!item?.id && (
+        <div className="alert alert-warning">Selecione um evento na tela anterior.</div>
+      )}
 
-      <div className="bg-white rounded shadow-sm p-3">
-        {carregando ? (
-          <div className="text-muted">Carregando...</div>
-        ) : (
-          <div className="table-responsive">
-            <table className="table table-bordered align-middle mb-0">
-              <thead className="table-light">
-                <tr>
-                  <th>Data/Hora</th>
-                  <th>Responsável</th>
-                  <th>Equipamento</th>
-                  <th>Localização</th>
-                  <th>Observação</th>
-                  <th>Arquivo</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtrados.length === 0 ? (
+      {item?.id && loading && (
+        <div className="alert alert-info">Carregando devoluções...</div>
+      )}
+
+      {erro && <div className="alert alert-danger">{erro}</div>}
+
+      {item?.id && !loading && !erro && (
+        <div className="bg-white rounded shadow-sm p-3">
+          {lista.length === 0 ? (
+            <div className="text-muted">Nenhuma devolução registrada para este evento.</div>
+          ) : (
+            <div className="table-responsive">
+              <table className="table table-bordered align-middle mb-0">
+                <thead className="table-light">
                   <tr>
-                    <td colSpan={6} className="text-center text-muted">
-                      Nenhuma devolução encontrada.
-                    </td>
+                    <th>Data/Hora</th>
+                    <th>Responsável</th>
+                    <th>Observação</th>
+                    <th>Imagem</th>
                   </tr>
-                ) : (
-                  filtrados.map((d) => (
+                </thead>
+                <tbody>
+                  {lista.map((d) => (
                     <tr key={d.id}>
-                      <td>
-                        {d.dataHora
-                          ? new Date(d.dataHora).toLocaleString()
-                          : "--"}
-                      </td>
-                      <td>{d.responsavel || "-"}</td>
-                      <td>{d.equipamento || "-"}</td>
-                      <td>{d.localizacao || "-"}</td>
-                      <td style={{ maxWidth: 420 }}>{d.observacao || "-"}</td>
+                      <td>{new Date(d.dataHora).toLocaleString()}</td>
+                      <td>{d.responsavel}</td>
+                      <td>{d.observacao || "-"}</td>
                       <td>
                         {d.imagemUrl ? (
-                          <button
-                            type="button"
+                          <a
+                            href={`${API}${d.imagemUrl}`}
+                            target="_blank"
+                            rel="noreferrer"
                             className="btn btn-sm btn-link p-0"
-                            onClick={() => abrirArquivo(d.imagemUrl)}
                           >
-                            <i className="bi bi-eye"></i> Visualizar
-                          </button>
+                            Ver arquivo
+                          </a>
                         ) : (
                           "-"
                         )}
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
