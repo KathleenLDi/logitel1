@@ -5,10 +5,10 @@ import ModalDevolucao from "./ModalDevolucao";
 
 export default function EventosPage({
   movimentacoes,
-  onRegistrar,           // abrir tela de registro de evento
+  onRegistrar,           
   onVoltar,
   API = "http://localhost:4000",
-  onAtualizar,           // opcional: (atualizado) => setMovimentacoes(...)
+  onAtualizar,          
 }) {
   const [busca, setBusca] = useState("");
 
@@ -25,7 +25,6 @@ export default function EventosPage({
     setModalAberto(false);
   };
 
-  // salvar devolução (POST /devolucoes) e marcar item como devolvido
   const salvarDevolucao = async ({ responsavel, dataHora, observacao, imagem }) => {
     if (!eventoSelecionado) return;
 
@@ -43,7 +42,7 @@ export default function EventosPage({
         throw new Error(`Falha ao salvar devolução (${r.status}) ${t}`);
       }
 
-      // marca como devolvido localmente
+      
       const atualizado = { ...eventoSelecionado, devolvido: 1 };
       if (onAtualizar) onAtualizar(atualizado);
 
@@ -54,7 +53,7 @@ export default function EventosPage({
     }
   };
 
-  // tabela de eventos com busca
+
   const filtradas = useMemo(() => {
     const q = busca.trim().toLowerCase();
     return movimentacoes
@@ -101,7 +100,7 @@ export default function EventosPage({
       </div>
 
       {/* A lista já sabe renderizar o botão “Registrar Devolução” quando
-          recebe a prop onDevolver. Aqui passamos a função que abre o modal. */}
+          recebe a prop onDevolver. Aqui passA a função que abre o modal. */}
       <ListaMovimentacoes movimentacoes={filtradas} onDevolver={abrirModalDevolucao} />
 
       {/* Modal de devolução */}

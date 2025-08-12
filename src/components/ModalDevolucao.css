@@ -1,9 +1,8 @@
 
-/* fundo escuro + centralização */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.55); /* slate-900/55 */
+  background: rgba(15, 23, 42, 0.55); 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,10 +10,10 @@
   z-index: 1050;
 }
 
-/* cartão do modal */
+
 .modal-card {
   width: 100%;
-  max-width: 560px;             /* tamanho compacto */
+  max-width: 560px;           
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0,0,0,.2);
@@ -22,7 +21,7 @@
   animation: modal-pop .18s ease-out;
 }
 
-/* cabeçalho */
+
 .modal-header {
   display: flex;
   align-items: center;
@@ -36,7 +35,7 @@
   font-weight: 600;
 }
 
-/* botão X */
+
 .btn-icon {
   appearance: none;
   border: 0;
@@ -48,14 +47,14 @@
 }
 .btn-icon:hover { opacity: 1; }
 
-/* corpo com rolagem se crescer */
+
 .modal-body {
   padding: 16px 18px;
   max-height: 70vh;
   overflow: auto;
 }
 
-/* rodapé */
+
 .modal-footer {
   padding: 12px 18px;
   border-top: 1px solid #eef0f2;
@@ -64,7 +63,7 @@
   justify-content: flex-end;
 }
 
-/* espaçamento utilitário */
+
 .mb-2 { margin-bottom: .75rem; }
 
 /* animação */
@@ -73,7 +72,7 @@
   to   { transform: translateY(0)   scale(1);    opacity: 1; }
 }
 
-/* responsivo: em telas muito pequenas, usar praticamente a tela toda */
+
 @media (max-width: 420px) {
   .modal-card { max-width: 92vw; }
 }

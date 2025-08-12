@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 export default function RegistroMovimentacao({
   tipo,
-  onSalvar,                 // <-- nome alinhado com App
+  onSalvar,                
   onCancelar,
   API = "http://localhost:4000",
 }) {
@@ -93,10 +93,10 @@ export default function RegistroMovimentacao({
       }
       const nova = await resp.json();
 
-      onSalvar?.(nova);      // <-- ATUALIZA HOMEPAGE sem F5
-      onCancelar?.();        // fecha o formulário
+      onSalvar?.(nova);      
+      onCancelar?.();        
 
-      // limpa estados (opcional)
+      
       setEquipamento(""); setLocalizacao(""); setResponsavel("");
       setMotivo(""); setOutroMotivo(""); setNotaFiscal("");
       setNotaFiscalFile(null); setPreviewUrl(""); setObservacao("");
