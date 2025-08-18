@@ -12,7 +12,7 @@ function ListaMovimentacoes({ movimentacoes, onDevolver }) {
     const url = item.notaFiscalUrl;
     if (!url) return;
 
-    // Base64: abre num iframe numa nova aba PARa evitar tela preta
+    
     if (url.startsWith("data:")) {
       const w = window.open("", "_blank", "noopener,noreferrer");
       if (w) {
@@ -29,7 +29,7 @@ function ListaMovimentacoes({ movimentacoes, onDevolver }) {
       return;
     }
 
-    // Caminho relativo do backend -> prefixa com host da API
+  
     const finalUrl = url.startsWith("/uploads/")
       ? `${API_BASE}${url}`
       : url;

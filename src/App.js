@@ -13,7 +13,8 @@ import EventosPage from "./components/EventosPage";
 import ConsultarPage from "./components/ConsultarPage";
 import DevolucoesPage from "./components/DevolucoesPage";
 
-const API = "http://localhost:4000";
+const API = process.env.REACT_APP_API || "http://10.26.225.169:4000";
+
 
 export default function App() {
   const [logado, setLogado] = useState(false);
@@ -23,10 +24,10 @@ export default function App() {
 
   const [movimentacoes, setMovimentacoes] = useState([]);
 
-  // modal devolução
+ 
   const [devModal, setDevModal] = useState({ aberto: false, item: null });
 
-  // consulta de devoluções (evento selecionado)
+ 
   const [eventoSelecionado, setEventoSelecionado] = useState(null);
 
   useEffect(() => {
@@ -54,19 +55,19 @@ export default function App() {
     setPagina("home");
   }
 
-  // chamada depois de salvar pela API
+  
   function handleRegistrarMovimentacaoLocal(nova) {
     setMovimentacoes((prev) => [nova, ...prev]);
     setMostrarRegistro({ tipo: null, ativo: false });
     setPagina("home");
   }
 
-  // abre modal de devolução
+ 
   function abrirModalDevolucao(item) {
     setDevModal({ aberto: true, item });
   }
 
-  // salva devolução via API
+ 
   async function salvarDevolucao(dados) {
     if (!devModal.item) return;
     try {
@@ -83,7 +84,7 @@ export default function App() {
         return;
       }
 
-      // marca como devolvido no estado
+    
       setMovimentacoes((prev) =>
         prev.map((m) => (m.id === devModal.item.id ? { ...m, devolvido: 1 } : m))
       );
@@ -218,7 +219,7 @@ function abrirConsultaDevolucoes(item) {
   );
 }
 
-/* Form do modal (no mesmo arquivo) */
+
 function DevolucaoForm({ onCancel, onSave }) {
   const [responsavel, setResponsavel] = useState("");
   const [observacao, setObservacao] = useState("");
