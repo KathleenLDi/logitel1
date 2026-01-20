@@ -11,6 +11,7 @@ O projeto foi criado para facilitar o controle e a visualização de dados em um
 - JavaScript (React)
 - HTML
 - CSS
+- Integração com API interna
 
 ---
 
